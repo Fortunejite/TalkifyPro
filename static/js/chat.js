@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 // Get the URL query string
-const queryString = window.location.search;
 
+const queryString = window.location.search;
 // Parse the query string into an object
 const params = new URLSearchParams(queryString);
 
@@ -47,6 +47,7 @@ function get_messages(name) {
 function send_message (name) {
   const data = {
     'message': $('#message').val(),
+    to: name,
   };
   $.ajax ({
     url: `/api/v1/chat/${$('#friend').text()}/send?x-token=${token}`,
@@ -60,7 +61,7 @@ function send_message (name) {
       parent.append(new_message)
       const div = $('.chat-container');
       div.scrollTop(div[0].scrollHeight)
-
+      socket.emit('send-msg', data);
     }
 
   })
@@ -68,7 +69,8 @@ function send_message (name) {
 
 $(document).ready(function() {
   const name = $('h6').text();
-
+  const socket = io('http://localhost:8000');
+  socket.emit('add-user', name);
 
   
   $('.chat-box').click(function (event) {
@@ -76,20 +78,14 @@ $(document).ready(function() {
       $('.right-container').css('display', 'block');
       $('.left-container').css('display', 'none');
     }
-    get_messages($(this).find('#ffriend').text())
-    socket.on('connection', (socket) => {
-      // Handle real-time events here
-      console.log('Connected');
-    });
+    get_messages($(this).find('#ffriend').text());
     socket.on('msg-recieved', function(data){
-      if (data['sent_by'] == $('#friend').text()) {
-        const parent = $('.chat-container')
-        const new_message = $('<div class="message-box friend-message"></div>')
-        new_message.append('<p>' + data['body'] + '<br><span>' + data['time'] + '</span></p>');
-        parent.append(new_message)
-        const div = $('.chat-container');
-        div.scrollTop(div[0].scrollHeight)
-      }
+      const parent = $('.chat-container')
+      const new_message = $('<div class="message-box friend-message"></div>')
+      new_message.append('<p>' + data['mesage'] + '<br><span>' + data['time'] + '</span></p>');
+      parent.append(new_message)
+      const div = $('.chat-container');
+      div.scrollTop(div[0].scrollHeight)
     });
   });
 
