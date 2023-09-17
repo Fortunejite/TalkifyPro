@@ -28,6 +28,7 @@ const io = Socket(server, {
 
 global.onlineUsers = new Map();
 io.on('connection', (socket) => {
+  console.log('Connected: Server');
   global.chatSocket = socket;
   socket.on('add-user', (user) => {
     // eslint-disable-next-line no-undef

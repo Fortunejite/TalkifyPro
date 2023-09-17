@@ -1,3 +1,6 @@
+/* eslint-disable object-shorthand */
+/* eslint-disable func-names */
+/* eslint-disable prefer-arrow-callback */
 /* eslint-disable no-alert */
 /* eslint-disable no-undef */
 // Get the URL query string
@@ -12,8 +15,8 @@ function getMessages(name) {
   $.ajax({
     url: `/api/v1/chat/${name}?x-token=${token}`,
     type: 'GET',
-    success: (response) => {
-      const { messages } = response;
+    success: function (response) {
+      const messages = response.msg;
       $('#friend').text(name);
 
       $('.dp').attr('src', `/image/${name}`);
@@ -53,7 +56,7 @@ function sendMessage(name, socket) {
     url: `/api/v1/chat/${$('#friend').text()}/send?x-token=${token}`,
     type: 'POST',
     data,
-    success: (response) => {
+    success: function (response) {
       $('#message').val('');
       const parent = $('.chat-container');
       const newMessage = $('<div class="message-box my-message"></div>');
@@ -67,12 +70,16 @@ function sendMessage(name, socket) {
   });
 }
 
-$(document).ready(() => {
+$(document).ready(function () {
   const name = $('h6').text();
   const socket = io('http://localhost:8000');
+  socket.on('connection', (socket) => {
+    console.log('Connected');
+  });
   socket.emit('add-user', name);
 
-  $('.chat-box').click((event) => {
+  // eslint-disable-next-line no-unused-vars
+  $('.chat-box').click(function (event) {
     if ($(window).width() < 800) {
       $('.right-container').css('display', 'block');
       $('.left-container').css('display', 'none');
@@ -88,7 +95,7 @@ $(document).ready(() => {
     });
   });
 
-  $('#send').click((event) => {
+  $('#send').click(function (event) {
     event.preventDefault();
     if ($('#message').val()) {
       sendMessage(name, socket);
@@ -97,7 +104,7 @@ $(document).ready(() => {
     }
   });
 
-  $('#posts').click(() => {
+  $('#posts').click(function () {
     $.ajax({
       url: '/logout',
       type: 'POST',
@@ -109,7 +116,7 @@ $(document).ready(() => {
     });
   });
 
-  $('#back').click(() => {
+  $('#back').click(function () {
     if ($(window).width() < 800) {
       // Execute code for small screens
       $('.right-container').css('display', 'none');
@@ -121,19 +128,19 @@ $(document).ready(() => {
     }
   });
 
-  $('.user-img').click(() => {
+  $('.user-img').click(function () {
     window.location.href = `/profile/${$('h6').text()}?x-token=${token}`;
   });
 
-  $('img-box').click(() => {
+  $('img-box').click(function () {
     window.location.href = `/profile/${$(this).attr('alt')}`;
   });
 
-  $('#notif').click(() => {
+  $('#notif').click(function () {
     window.location.href = `/notifications?x-token=${token}`;
   });
 
-  $('#users').click(() => {
+  $('#users').click(function () {
     window.location.href = `/users?x-token=${token}`;
   });
 
