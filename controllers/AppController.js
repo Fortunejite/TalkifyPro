@@ -25,9 +25,10 @@ class AppController {
       if (req.query['x-token'] && await AuthController.validateUser(req)) {
         const user = await UserController.getMe(await AuthController.validateUser(req));
         const { name } = req.params;
+        const { isActive } = dbClient.users.findOne({ username: name });
         const { messages } = await dbClient.messages.findOne({ ownerId: user._id });
         const msg = messages[name];
-        res.status(200).send({ msg });
+        res.status(200).send({ msg, stats: isActive });
       } else {
         res.status(401).redirect('/signin');
       }

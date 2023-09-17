@@ -51,6 +51,7 @@ class AuthController {
             friendRequest: [],
             pendingRequests: [],
             notifications: [],
+            isActive: false,
           });
           await dbClient.messages.insertOne({
             ownerId: newUser.insertedId,

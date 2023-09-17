@@ -2,6 +2,7 @@ const Socket = require('socket.io');
 const express = require('express');
 const nunjucks = require('nunjucks');
 const includeRoutes = require('./routes/index');
+const dbClient = require('./utils/db');
 
 const app = express();
 // Configure Nunjucks as the template engine
@@ -26,20 +27,42 @@ const io = Socket(server, {
   },
 });
 
+function getKeyByValue(map, searchValue) {
+  for (const [key, value] of map.entries()) {
+    if (value === searchValue) {
+      return key;
+    }
+  }
+  return null; // Return null if the value is not found in the map
+}
+
 global.onlineUsers = new Map();
 io.on('connection', (socket) => {
-  console.log('Connected: Server');
   global.chatSocket = socket;
-  socket.on('add-user', (user) => {
+  socket.on('add-user', async (user) => {
+    await dbClient.users.updateOne({ username: user }, { $set: { isActive: true } })
+      .catch((err) => {
+        console.log(err);
+      });
     // eslint-disable-next-line no-undef
     onlineUsers.set(user, socket.id);
   });
 
   socket.on('send-msg', (data) => {
-    // eslint-disable-next-line no-undef
-    const sendUserSocket = onlineUsers.get(data.to);
+    const sendUserSocket = global.onlineUsers.get(data.to);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit('msg-recieved', data);
+      io.to(sendUserSocket).emit('msg-recieved', data);
+    }
+  });
+
+  socket.on('disconnect', async () => {
+    const user = getKeyByValue(global.onlineUsers, socket.id);
+    if (user) {
+      const disconnectedUser = global.onlineUsers.get(user);
+      if (global.onlineUsers.has(disconnectedUser)) {
+        global.onlineUsers.delete(disconnectedUser);
+      }
+      await dbClient.users.updateOne({ username: user }, { $set: { isActive: false } });
     }
   });
 });

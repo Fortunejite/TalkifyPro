@@ -18,7 +18,11 @@ function getMessages(name) {
     success: function (response) {
       const messages = response.msg;
       $('#friend').text(name);
-
+      if (response.stats) {
+        $('#stats').text('Online');
+      } else {
+        $('#stats').text('Offline');
+      }
       $('.dp').attr('src', `/image/${name}`);
       $('.dp').attr('alt', name);
 
@@ -48,9 +52,11 @@ function getMessages(name) {
 }
 
 function sendMessage(name, socket) {
+  const date = new Date();
   const data = {
     message: $('#message').val(),
-    to: name,
+    time: date.toDateString(),
+    to: $('#friend').text(),
   };
   $.ajax({
     url: `/api/v1/chat/${$('#friend').text()}/send?x-token=${token}`,
@@ -73,9 +79,6 @@ function sendMessage(name, socket) {
 $(document).ready(function () {
   const name = $('h6').text();
   const socket = io('http://localhost:8000');
-  socket.on('connection', (socket) => {
-    console.log('Connected');
-  });
   socket.emit('add-user', name);
 
   // eslint-disable-next-line no-unused-vars
@@ -88,7 +91,7 @@ $(document).ready(function () {
     socket.on('msg-recieved', (data) => {
       const parent = $('.chat-container');
       const newMessage = $('<div class="message-box friend-message"></div>');
-      newMessage.append(`<p>${data.mesage}<br><span>${data.time}</span></p>`);
+      newMessage.append(`<p>${data.message}<br><span>${data.time}</span></p>`);
       parent.append(newMessage);
       const div = $('.chat-container');
       div.scrollTop(div[0].scrollHeight);
