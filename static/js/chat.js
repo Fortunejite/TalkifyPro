@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-undef */
 // Get the URL query string
 
@@ -7,110 +8,108 @@ const params = new URLSearchParams(queryString);
 
 // Example: Get the value of a specific parameter named 'paramName'
 const token = params.get('x-token');
-function get_messages(name) {
+function getMessages(name) {
   $.ajax({
     url: `/api/v1/chat/${name}?x-token=${token}`,
     type: 'GET',
-    success: function(response) {
-      const messages = response.messages;
-      $('#friend').text(name)
+    success: (response) => {
+      const { messages } = response;
+      $('#friend').text(name);
 
-      $('.dp').attr('src', "/image/"+name);
+      $('.dp').attr('src', `/image/${name}`);
       $('.dp').attr('alt', name);
 
-      const parent = $('.chat-container')
+      const parent = $('.chat-container');
       parent.empty();
       if (messages) {
-        for (let i = 0; i < messages.length; i++) {
-          const message = messages[i];
-          const text = message['body'];
-          const date = message['time'];
-          const owner = message['sent_by'];
-          
-          if (owner == name) {
-            const new_message = $('<div class="message-box friend-message"></div>')
-            new_message.append('<p>' + text + '<br><span>' + date + '</span></p>');
-            parent.append(new_message)
+        for (let i = 0; i < messages.length; i += 1) {
+          const msg = messages[i];
+          const text = msg.message;
+          const date = msg.time;
+          const owner = msg.sent_by;
+          if (owner === name) {
+            const newMessage = $('<div class="message-box friend-message"></div>');
+            newMessage.append(`<p>${text}<br><span>${date}</span></p>`);
+            parent.append(newMessage);
           } else {
-            const new_message = $('<div class="message-box my-message"></div>')
-            new_message.append('<p>' + text + '<br><span>' + date + '</span></p>');
-            parent.append(new_message)
+            const newMessage = $('<div class="message-box my-message"></div>');
+            newMessage.append(`<p>${text}<br><span>${date}</span></p>`);
+            parent.append(newMessage);
           }
         }
         const div = $('.chat-container');
-        div.scrollTop(div[0].scrollHeight)
+        div.scrollTop(div[0].scrollHeight);
       }
-    }
+    },
   });
 }
 
-function send_message (name) {
+function sendMessage(name, socket) {
   const data = {
-    'message': $('#message').val(),
+    message: $('#message').val(),
     to: name,
   };
-  $.ajax ({
+  $.ajax({
     url: `/api/v1/chat/${$('#friend').text()}/send?x-token=${token}`,
     type: 'POST',
-    data: data,
-    success: function(response) {
-      $('#message').val('')
-      const parent = $('.chat-container')
-      const new_message = $('<div class="message-box my-message"></div>')
-      new_message.append('<p>' + response.message+ '<br><span>' + response.time + '</span></p>');
-      parent.append(new_message)
+    data,
+    success: (response) => {
+      $('#message').val('');
+      const parent = $('.chat-container');
+      const newMessage = $('<div class="message-box my-message"></div>');
+      newMessage.append(`<p>${response.message}<br><span>${response.time}</span></p>`);
+      parent.append(newMessage);
       const div = $('.chat-container');
-      div.scrollTop(div[0].scrollHeight)
+      div.scrollTop(div[0].scrollHeight);
       socket.emit('send-msg', data);
-    }
+    },
 
-  })
+  });
 }
 
-$(document).ready(function() {
+$(document).ready(() => {
   const name = $('h6').text();
   const socket = io('http://localhost:8000');
   socket.emit('add-user', name);
 
-  
-  $('.chat-box').click(function (event) {
+  $('.chat-box').click((event) => {
     if ($(window).width() < 800) {
       $('.right-container').css('display', 'block');
       $('.left-container').css('display', 'none');
     }
-    get_messages($(this).find('#ffriend').text());
-    socket.on('msg-recieved', function(data){
-      const parent = $('.chat-container')
-      const new_message = $('<div class="message-box friend-message"></div>')
-      new_message.append('<p>' + data['mesage'] + '<br><span>' + data['time'] + '</span></p>');
-      parent.append(new_message)
+    getMessages($(this).find('#ffriend').text());
+    socket.on('msg-recieved', (data) => {
+      const parent = $('.chat-container');
+      const newMessage = $('<div class="message-box friend-message"></div>');
+      newMessage.append(`<p>${data.mesage}<br><span>${data.time}</span></p>`);
+      parent.append(newMessage);
       const div = $('.chat-container');
-      div.scrollTop(div[0].scrollHeight)
+      div.scrollTop(div[0].scrollHeight);
     });
   });
 
-  $("#send").click( function(event) {
+  $('#send').click((event) => {
     event.preventDefault();
     if ($('#message').val()) {
-      send_message(name)
-    } else{
+      sendMessage(name, socket);
+    } else {
       alert('Pls type your message');
     }
   });
 
-  $('#posts').click(function() {
+  $('#posts').click(() => {
     $.ajax({
       url: '/logout',
       type: 'POST',
-      success: function(response) {
+      success: () => {
         // Handle successful logout
         alert('Logout successful');
         window.location.href = '/';
-      }
+      },
     });
   });
 
-  $('#back').click(function() {
+  $('#back').click(() => {
     if ($(window).width() < 800) {
       // Execute code for small screens
       $('.right-container').css('display', 'none');
@@ -122,23 +121,21 @@ $(document).ready(function() {
     }
   });
 
-  $('.user-img').click(function() {
-    window.location.href = '/profile/' + $('h6').text() + `?x-token=${token}`;
+  $('.user-img').click(() => {
+    window.location.href = `/profile/${$('h6').text()}?x-token=${token}`;
   });
 
-  $('img-box').click(function() {
-    window.location.href = '/profile/' + $(this).attr('alt');
+  $('img-box').click(() => {
+    window.location.href = `/profile/${$(this).attr('alt')}`;
   });
 
-  $('#notif').click(function(event) {
+  $('#notif').click(() => {
     window.location.href = `/notifications?x-token=${token}`;
   });
 
-  $('#users').click(function(event){
+  $('#users').click(() => {
     window.location.href = `/users?x-token=${token}`;
   });
-  
 
-  $('.right-container').css('display','none')
-
+  $('.right-container').css('display', 'none');
 });

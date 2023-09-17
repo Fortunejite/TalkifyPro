@@ -25,9 +25,9 @@ class AppController {
       if (req.query['x-token'] && await AuthController.validateUser(req)) {
         const user = await UserController.getMe(await AuthController.validateUser(req));
         const { name } = req.params;
-        const messages = await dbClient.messages.find({ users: [user.username, name]});
-        console.log(messages);
-        res.status(200).send({ messages });
+        const { messages } = await dbClient.messages.findOne({ ownerId: user._id });
+        const msg = messages[name];
+        res.status(200).send({ msg });
       } else {
         res.status(401).redirect('/signin');
       }
@@ -42,16 +42,21 @@ class AppController {
     try {
       if (req.query['x-token'] && await AuthController.validateUser(req)) {
         const user = await UserController.getMe(await AuthController.validateUser(req));
+        const userMessage = await dbClient.messages.findOne({ ownerId: user._id });
         const { name } = req.params;
         const { message } = req.body;
         const date = new Date();
+        const user2 = await dbClient.users.findOne({ username: name });
+        const user2Message = await dbClient.messages.findOne({ ownerId: user2._id });
         const data = {
           message,
           time: date.toDateString(),
-          users: [user.user.username, name],
           sent_by: user.username,
         };
-        await dbClient.messages.insertOne(data);
+        userMessage.messages[name].push(data);
+        user2Message.messages[user.username].push(data);
+        await dbClient.messages.updateOne({ ownerId: user._id }, { $set: { messages: userMessage.messages } });
+        await dbClient.messages.updateOne({ ownerId: user2._id }, { $set: { messages: user2Message.messages } });
         res.status(201).send(data);
       } else {
         res.status(401).send({ error: 'Unauthorized' });

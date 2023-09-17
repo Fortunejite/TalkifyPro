@@ -30,14 +30,16 @@ global.onlineUsers = new Map();
 io.on('connection', (socket) => {
   global.chatSocket = socket;
   socket.on('add-user', (user) => {
+    // eslint-disable-next-line no-undef
     onlineUsers.set(user, socket.id);
   });
 
   socket.on('send-msg', (data) => {
+    // eslint-disable-next-line no-undef
     const sendUserSocket = onlineUsers.get(data.to);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit('msg-recieved', data);
     }
-  })
+  });
 });
 module.exports = { app, server };

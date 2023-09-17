@@ -14,7 +14,7 @@ class DBClient {
       // Select the database and collection
       this.db = this.client.db(this.db);
       this.users = this.db.collection('users');
-      this.messages = this.db.collection('files');
+      this.messages = this.db.collection('messages');
     });
   }
 

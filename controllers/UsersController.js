@@ -61,7 +61,11 @@ class UserController {
   }
 
   static async addFriend(user, name) {
-    await dbClient.users.updateOne({ username: user }, { $push: { friends: name } });
+    // eslint-disable-next-line no-param-reassign
+    const { messages } = await dbClient.messages.findOne({ ownerId: user._id });
+    messages[name] = [];
+    await dbClient.users.updateOne({ username: user.username }, { $push: { friends: name } });
+    await dbClient.messages.updateOne({ ownerId: user._id }, { $set: { messages } });
   }
 
   static async acceptRequest(req, res) {
@@ -83,8 +87,8 @@ class UserController {
         break;
       }
     }
-    await UserController.addFriend(currentUser.username, friend);
-    await UserController.addFriend(friend, currentUser.username);
+    await UserController.addFriend(currentUser, friend);
+    await UserController.addFriend(await dbClient.users.findOne({ username: friend }), currentUser.username);
     await dbClient.users.updateOne({ username: currentUser.username }, { $pull: { friendRequest: friend } });
     await dbClient.users.updateOne({ username: friend }, { $pull: { pendingRequests: currentUser.username } });
     await dbClient.users.updateOne({ username: friend }, { $push: { notifications: newNotif } });

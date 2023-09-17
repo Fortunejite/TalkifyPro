@@ -52,6 +52,10 @@ class AuthController {
             pendingRequests: [],
             notifications: [],
           });
+          await dbClient.messages.insertOne({
+            ownerId: newUser.insertedId,
+            messages: {},
+          });
           const token = uuid4();
           await redisClient.set(`auth_${token}`, newUser.insertedId.toString(), 24 * 60 * 60);
           res.status(201).send({ success: token });
