@@ -6,7 +6,6 @@ function createUser() {
   formData.username = $('#name2').val();
   formData.password = $('#pass2').val();
   // formData.profile', $('#file')[0].files[0]);
-  console.log(JSON.stringify(formData));
   $.ajax({
     url: '/signup',
     type: 'POST',
