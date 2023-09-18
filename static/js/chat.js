@@ -86,6 +86,8 @@ $(document).ready(function () {
     if ($(window).width() < 800) {
       $('.right-container').css('display', 'block');
       $('.left-container').css('display', 'none');
+    } else {
+      $('.right-container').css('display', 'block');
     }
     getMessages($(this).find('#ffriend').text());
     socket.on('msg-recieved', (data) => {
@@ -126,8 +128,10 @@ $(document).ready(function () {
       $('.left-container').css('display', 'block');
     } else {
       // Execute code for larger screens
-      $('.right-container').empty();
-      $('.right-container').append('<h2>Click on a friend to chat</h2>');
+      const rightContainer = $('.right-container');
+      rightContainer.empty();
+      rightContainer.append('<h2>Click on a friend to chat</h2>');
+      rightContainer.css('display', 'block');
     }
   });
 
