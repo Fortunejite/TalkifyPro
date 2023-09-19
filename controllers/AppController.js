@@ -94,6 +94,26 @@ class AppController {
       res.status(500).send('Internal Server Error'); // Returns an internal server error message
     }
   }
+
+  static async getImage(req, res) {
+    const { username } = req.params;
+    const user = await dbClient.users.findOne({ username });
+    if (!user || !user.avatar) {
+      res.status(403).send({ message: `${username} does not exist`, category: 'danger' });
+    }
+    const imageBuffer = user.avatar.buffer;
+    const base64ImageData = imageBuffer.toString('base64');
+    const contentType = 'image/jpeg'; // Adjust as needed for different image formats
+
+    // Create a data URI with the content type and base64 data
+    const dataUri = `data:${contentType};base64,${base64ImageData}`;
+
+    // Set the appropriate content type for the response
+    res.setHeader('Content-Type', contentType);
+
+    // Send the data URI as the response
+    res.status(200).send(dataUri);
+  }
 }
 
 // Export the AppController class

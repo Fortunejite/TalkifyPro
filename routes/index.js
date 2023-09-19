@@ -1,13 +1,12 @@
 const AuthController = require('../controllers/AuthController');
-
 const UserController = require('../controllers/UsersController');
-
 const AppController = require('../controllers/AppController');
+const upload = require('../middlewares/imageUpload');
 
 const includeRoutes = (app) => {
   app.get('/signin', AuthController.signIn);
   app.get('/logout', AuthController.logOut);
-  app.post('/signup', AuthController.signUp);
+  app.post('/signup', upload.single('image'), AuthController.signUp);
   app.get('/notifications', UserController.getNotifications);
   app.get('/users', UserController.showUsers);
   app.post('/api/v1/sendRequest', UserController.sendRequest);
@@ -17,6 +16,7 @@ const includeRoutes = (app) => {
   app.get('/api/v1/chat/:name', AppController.getChat);
   app.post('/api/v1/chat/:name/send', AppController.sendMessage);
   app.get('/profile/:name', UserController.getProfile);
+  app.get('/image/:username', AppController.getImage);
 };
 
 module.exports = includeRoutes;

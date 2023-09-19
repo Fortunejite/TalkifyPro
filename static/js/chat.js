@@ -80,6 +80,13 @@ $(document).ready(function () {
   const name = $('h6').text();
   const socket = io('http://localhost:8000');
   socket.emit('add-user', name);
+  $.ajax({
+    url: `/image/${name}`,
+    type: 'GET',
+    success: function (response) {
+      $('.dpp').attr('src', response);
+    },
+  });
 
   // eslint-disable-next-line no-unused-vars
   $('.chat-box').click(function (event) {

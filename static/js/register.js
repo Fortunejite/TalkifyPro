@@ -1,30 +1,49 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-undef */
 function createUser() {
-  const formData = {};
-  formData.email = $('#email').val();
-  formData.username = $('#name2').val();
-  formData.password = $('#pass2').val();
-  // formData.profile', $('#file')[0].files[0]);
-  $.ajax({
-    url: '/signup',
-    type: 'POST',
-    data: formData,
-    dataType: 'json',
-    success: (response, text, jqXHR) => {
-      if (jqXHR.status === 201) {
-        window.location.href = `/?x-token=${response.success}`;
-      } else {
-        alert(response.error);
-      }
-    },
-    error: (xhr) => {
-      const response = JSON.parse(xhr.responseText);
-      alert(response.error);
-      $('#up').show();
-      $('#loadingSpinner').hide();
-    },
-  });
+  const formData = new FormData();
+  formData.append('email', $('#email').val());
+  formData.append('username', $('#name2').val());
+  formData.append('password', $('#pass2').val());
+
+  const fileInput = $('#file')[0];
+  if (fileInput.files.length > 0) {
+    const imageFile = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      // After reading the file, add it to the FormData
+      formData.append('image', new Blob([reader.result]));
+      
+      // Now, make the AJAX request
+      $.ajax({
+        url: '/signup',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        contentType: false, // Let jQuery set it automatically
+        processData: false, // Prevent jQuery from processing the data
+        success: (response, text, jqXHR) => {
+          if (jqXHR.status === 201) {
+            window.location.href = `/?x-token=${response.success}`;
+          } else {
+            alert(response.error);
+          }
+        },
+        error: (xhr) => {
+          const response = JSON.parse(xhr.responseText);
+          alert(response.error);
+          $('#up').show();
+          $('#loadingSpinner').hide();
+        },
+      });
+    };
+
+    reader.readAsArrayBuffer(imageFile);
+  } else {
+    // Handle the case when no file is selected
+    alert('Please select an image file');
+  }
 }
 
 $(document).ready(() => {
