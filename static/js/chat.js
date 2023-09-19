@@ -18,7 +18,7 @@ function getMessages(name) {
     success: function (response) {
       const messages = response.msg;
       $('#friend').text(name);
-      if (response.stats) {
+      if (response.isActive) {
         $('#stats').text('Online');
       } else {
         $('#stats').text('Offline');

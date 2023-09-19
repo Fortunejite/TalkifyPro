@@ -58,9 +58,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', async () => {
     const user = getKeyByValue(global.onlineUsers, socket.id);
     if (user) {
-      const disconnectedUser = global.onlineUsers.get(user);
-      if (global.onlineUsers.has(disconnectedUser)) {
-        global.onlineUsers.delete(disconnectedUser);
+      if (global.onlineUsers.has(user)) {
+        global.onlineUsers.delete(user);
       }
       await dbClient.users.updateOne({ username: user }, { $set: { isActive: false } });
     }

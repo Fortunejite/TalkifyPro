@@ -76,7 +76,7 @@ class AuthController {
   static async logOut(req, res) {
     if (req.query['x-token'] && await AuthController.validateUser(req)) {
       await redisClient.del(`auth_${req.query['x-token']}`);
-      res.status(200);
+      res.status(200).redirect('/signin');
     } else {
       res.status(401).redirect('/signin');
     }
