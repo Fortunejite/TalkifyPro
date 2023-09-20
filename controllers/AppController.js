@@ -102,17 +102,12 @@ class AppController {
       res.status(403).send({ message: `${username} does not exist`, category: 'danger' });
     }
     const imageBuffer = user.avatar.buffer;
-    const base64ImageData = imageBuffer.toString('base64');
-    const contentType = 'image/jpeg'; // Adjust as needed for different image formats
-
-    // Create a data URI with the content type and base64 data
-    const dataUri = `data:${contentType};base64,${base64ImageData}`;
 
     // Set the appropriate content type for the response
-    res.setHeader('Content-Type', contentType);
+    res.contentType('image/jpeg'); // Adjust as needed for different image formats
 
-    // Send the data URI as the response
-    res.status(200).send(dataUri);
+    // Send the image file as a response
+    res.end(imageBuffer);
   }
 }
 
