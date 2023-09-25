@@ -29,7 +29,7 @@ class AuthController {
     const { email } = req.body;
     const { password } = req.body;
     const { username } = req.body;
-    const image_data = req.file ? req.file.buffer : null;
+    const imageData = req.file ? req.file.buffer : null;
 
     if (!email) {
       res.status(400).send({ error: 'Missing email' });
@@ -52,7 +52,7 @@ class AuthController {
             friendRequest: [],
             pendingRequests: [],
             notifications: [],
-            avatar: image_data,
+            avatar: imageData,
             isActive: false,
           });
           await dbClient.messages.insertOne({

@@ -109,6 +109,10 @@ class AppController {
     // Send the image file as a response
     res.end(imageBuffer);
   }
+
+  static LandingPage(req, res) {
+    res.render('about.html');
+  }
 }
 
 // Export the AppController class

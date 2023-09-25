@@ -17,6 +17,7 @@ const includeRoutes = (app) => {
   app.post('/api/v1/chat/:name/send', AppController.sendMessage);
   app.get('/profile/:name', UserController.getProfile);
   app.get('/image/:username', AppController.getImage);
+  app.get('/about', AppController.LandingPage);
 };
 
 module.exports = includeRoutes;

@@ -39,7 +39,7 @@
 
     <!-- Chats -->
     <div class="chat-list">
-      {% if friends%}
+      {% if friends | length !== 0 %}
           {% for friend in friends %}
               <div class="chat-box">
                 <div class="img-box">

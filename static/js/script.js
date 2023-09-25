@@ -21,7 +21,7 @@ $(document).ready(function() {
   $('#logout').click(function() {
       $.ajax({
           url: `/logout?x-token=${token}`,
-          type: 'POST',
+          type: 'GET',
           success: function(response) {
               // Handle successful logout
               alert('Logout successful');
@@ -44,7 +44,7 @@ $(document).ready(function() {
   });
 
   $('.add').click(function () {
-      friend = $(this).siblings('h3').text();
+      const friend = $(this).closest('div').prev('h3').text();
       $.ajax({
         url: `/api/v1/sendRequest?x-token=${token}`,
         type: 'POST',
@@ -58,7 +58,7 @@ $(document).ready(function() {
   });
 
   $('.profile').click(function (event) {
-      window.location.href = '/profile/' + $(this).siblings('h3').text() + `?x-token=${token}`;
+      window.location.href = '/profile/' + $(this).closest('div').prev('h3').text() + `?x-token=${token}`;
   });
 
 });

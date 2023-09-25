@@ -15,7 +15,7 @@
             <h1>Notifications</h1>
         </div>
         <div id="notifications">
-            {% if notifications %}
+            {% if notifications | length !== 0 %}
                 {% for notification in notifications %}
                     <div class="notification">
                         {% if notification.id %}
@@ -25,7 +25,7 @@
                         {% endif %}
                         <div class="notification-text">
                             <p id="message">{{ notification.message }}</p>
-                            {% if notification.category == 'Request' %}
+                            {% if notification.category === 'Request' %}
                                 <button id="accept">Accept</button>
                                 <button id="reject">Reject</button>
                             {% endif %}
@@ -35,7 +35,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <h3>You have no notification</h3>
+                <h3>You have no notification. You are done for the day 🎉</h3>
             {% endif %}
         </div>
     </div>

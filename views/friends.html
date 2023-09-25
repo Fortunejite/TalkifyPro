@@ -11,7 +11,7 @@
 </head>
 <body>
     <div id="main">
-        {% if users or users.lenght() > 1 %}
+        {% if users | length !== 0 %}
             <h2>People you may know</h2>
             {% for userz in users %}
                 {% if userz.username != user %}
@@ -25,8 +25,10 @@
                                         </div>
                                         <div>
                                             <h3>{{userz.username}}</h3>
-                                            <button name="add" class="add">Send friend request</button>
-                                            <button name="add" class="profile">Visit profile</button>
+                                            <div>
+                                                <button name="add" class="add">Send friend request</button>
+                                                <button name="add" class="profile">Visit profile</button>
+                                            </div>
                                         </div>
 
                                     </div>

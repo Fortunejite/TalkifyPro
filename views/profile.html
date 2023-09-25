@@ -17,11 +17,11 @@
         </div>
         <p id="email">Email: {{user.email}}</p>
         
-        {% if user.friends %}
+        {% if user.friends | length !== 0%}
             <h3>Friends: </h3>
             <ul>
                 {% for i in user.friends %}
-                    <li><img class="dp" src="/image/{{i}}" alt="{{i}}">{{i}}</li>
+                    <li><img class="dpFriends" src="/image/{{i}}" alt="{{i}}">{{i}}</li>
                 {% endfor %}
             </ul>
             {% if current_user.username == user.username %}
