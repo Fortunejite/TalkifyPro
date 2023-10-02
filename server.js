@@ -5,7 +5,6 @@ const includeRoutes = require('./routes/index');
 const dbClient = require('./utils/db');
 
 const app = express();
-// Configure Nunjucks as the template engine
 nunjucks.configure('views', {
   autoescape: true,
   express: app,

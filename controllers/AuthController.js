@@ -52,6 +52,7 @@ class AuthController {
             friendRequest: [],
             pendingRequests: [],
             notifications: [],
+            groups: {},
             avatar: imageData,
             isActive: false,
           });

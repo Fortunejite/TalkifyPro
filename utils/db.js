@@ -15,6 +15,8 @@ class DBClient {
       this.db = this.client.db(this.db);
       this.users = this.db.collection('users');
       this.messages = this.db.collection('messages');
+      this.groups = this.db.collection('groups');
+      this.groupMessages = this.db.collection('groupMessages');
     });
   }
 

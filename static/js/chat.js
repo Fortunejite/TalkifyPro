@@ -35,11 +35,11 @@ function getMessages(name) {
           const date = msg.time;
           const owner = msg.sent_by;
           if (owner === name) {
-            const newMessage = $('<div class="message-box friend-message"></div>');
+            const newMessage = $(`<div class='message-box friend-message'></div>`);
             newMessage.append(`<p>${text}<br><span>${date}</span></p>`);
             parent.append(newMessage);
           } else {
-            const newMessage = $('<div class="message-box my-message"></div>');
+            const newMessage = $(`<div class='message-box my-message'></div>`);
             newMessage.append(`<p>${text}<br><span>${date}</span></p>`);
             parent.append(newMessage);
           }
@@ -57,6 +57,7 @@ function sendMessage(name, socket) {
     message: $('#message').val(),
     time: date.toDateString(),
     to: $('#friend').text(),
+    sender: name,
   };
   $.ajax({
     url: `/api/v1/chat/${$('#friend').text()}/send?x-token=${token}`,
@@ -65,7 +66,7 @@ function sendMessage(name, socket) {
     success: function (response) {
       $('#message').val('');
       const parent = $('.chat-container');
-      const newMessage = $('<div class="message-box my-message"></div>');
+      const newMessage = $(`<div class='message-box my-message'></div>`);
       newMessage.append(`<p>${response.message}<br><span>${response.time}</span></p>`);
       parent.append(newMessage);
       const div = $('.chat-container');
@@ -78,11 +79,29 @@ function sendMessage(name, socket) {
 
 $(document).ready(function () {
   const name = $('h6').text();
+
+  // Check if the "activeTab" parameter is set to 2
+  if (params.get('activeTab') === '2') {
+    // Activate content2
+    switchTab(1); // Assuming your switchTab function accepts tab indices starting from 0
+  }
+
   const socket = io('http://localhost:8000');
   socket.emit('add-user', name);
-  
-
-  // eslint-disable-next-line no-unused-vars
+  socket.on('msg-recieved', (data) => {
+    console.log(data.sender);
+    console.log($('#friend').text());
+    console.log(data.sender === $('#friend').text());
+    if (data.sender === $('#friend').text()) {
+      const parent = $('.chat-container');
+      const newMessage = $(`<div class='message-box friend-message'></div>`);
+      newMessage.append(`<p>${data.message}<br><span>${data.time}</span></p>`);
+      parent.append(newMessage);
+      const div = $('.chat-container');
+      div.scrollTop(div[0].scrollHeight);
+    }
+  });
+  // eslint-disable-next-line no-unused-consts
   $('.chat-box').click(function (event) {
     if ($(window).width() < 800) {
       $('.right-container').css('display', 'block');
@@ -91,16 +110,12 @@ $(document).ready(function () {
       $('.right-container').css('display', 'block');
     }
     getMessages($(this).find('#ffriend').text());
-    socket.on('msg-recieved', (data) => {
-      const parent = $('.chat-container');
-      const newMessage = $('<div class="message-box friend-message"></div>');
-      newMessage.append(`<p>${data.message}<br><span>${data.time}</span></p>`);
-      parent.append(newMessage);
-      const div = $('.chat-container');
-      div.scrollTop(div[0].scrollHeight);
-    });
   });
 
+  $('.group-box').click(function (event) {
+    event.preventDefault();
+    window.location.href = `/api/v1/groupChat/${$(this).find('img.img-cover').attr('alt')}?x-token=${token}`;
+  });
   $('#send').click(function (event) {
     event.preventDefault();
     if ($('#message').val()) {
@@ -139,6 +154,9 @@ $(document).ready(function () {
   $('.user-img').click(function () {
     window.location.href = `/profile/${$('h6').text()}?x-token=${token}`;
   });
+  $('.user-imgg').click(function () {
+    window.location.href = `/profile/${$('#friend').text()}?x-token=${token}`;
+  });
 
   $('img-box').click(function () {
     window.location.href = `/profile/${$(this).attr('alt')}`;
@@ -150,6 +168,16 @@ $(document).ready(function () {
 
   $('#users').click(function () {
     window.location.href = `/users?x-token=${token}`;
+  });
+
+  $('#joinGroup').click(function (event) {
+    event.preventDefault();
+    window.location.href = `/joingroup?x-token=${token}`;
+  });
+
+  $('#createGroup').click(function (event) {
+    event.preventDefault();
+    window.location.href = `/creategroup?x-token=${token}`;
   });
 
   $('.right-container').css('display', 'none');

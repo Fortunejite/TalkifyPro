@@ -17,7 +17,7 @@ class AppController {
         // Get user details
         const user = await UserController.getMe(id); // Returns user data
         // Render the chat.html page with user's friends and username
-        res.status(200).render('chat.html', { friends: user.friends, user: user.username }); // Renders the chat.html page
+        res.status(200).render('chat.html', { friends: user.friends, user: user.username, groups: user.groups }); // Renders the chat.html page
       } else {
         // Redirect to the signin page if not authenticated
         res.status(401).redirect('/signin'); // Redirects to the signin page
@@ -82,6 +82,30 @@ class AppController {
         // Update the messages in the database
         await dbClient.messages.updateOne({ ownerId: user._id }, { $set: { messages: userMessage.messages } }); // Updates sender's messages
         await dbClient.messages.updateOne({ ownerId: user2._id }, { $set: { messages: user2Message.messages } }); // Updates receiver's messages
+        await dbClient.users.updateOne(
+          { _id: user._id },
+          {
+            $pull: { friends: user2.username },
+          },
+        );
+        await dbClient.users.updateOne(
+          { _id: user._id },
+          {
+            $push: { friends: { $each: [user2.username], $position: 0 } },
+          },
+        );
+        await dbClient.users.updateOne(
+          { _id: user2._id },
+          {
+            $pull: { friends: user.username },
+          },
+        );
+        await dbClient.users.updateOne(
+          { _id: user2._id },
+          {
+            $push: { friends: { $each: [user.username], $position: 0 } },
+          },
+        );
         // Send the newly sent message
         res.status(201).send(data); // Sends the newly sent message
       } else {

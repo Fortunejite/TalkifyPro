@@ -2,6 +2,7 @@ const AuthController = require('../controllers/AuthController');
 const UserController = require('../controllers/UsersController');
 const AppController = require('../controllers/AppController');
 const upload = require('../middlewares/imageUpload');
+const GroupController = require('../controllers/GroupsController');
 
 const includeRoutes = (app) => {
   app.get('/signin', AuthController.signIn);
@@ -18,6 +19,18 @@ const includeRoutes = (app) => {
   app.get('/profile/:name', UserController.getProfile);
   app.get('/image/:username', AppController.getImage);
   app.get('/about', AppController.LandingPage);
+
+  // Group messages api
+  app.get('/joingroup', GroupController.joinPage);
+  app.post('/api/v1/joingroup', GroupController.joinGroup);
+
+  app.get('/creategroup', GroupController.createPage);
+  app.post('/api/v1/creategroup', GroupController.createGroup);
+
+  app.get('/api/v1/groupChat/:groupId', GroupController.groupPage);
+  app.post('/api/v1/groupchat/:groupId/send', GroupController.sendMessage);
+
+  app.get('/groupinfo/:groupId', GroupController.getProfile);
 };
 
 module.exports = includeRoutes;

@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
+:root {
+  --main-bg-color: #1B1D24;
+  --primary-color: #365A08;
+  --secondary-color: #5D9D0B;
+  --accent-color: #72EB3A;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -12,27 +19,28 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #1B1D24;
+  background: var(--main-bg-color);
+  margin: 0;
 }
-
 
 .main-container {
   position: relative;
-  width: 1500px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1500px; /* Changed max-width for responsiveness */
   height: 100vh;
-  background: #1B1D24;
+  background: var(--main-bg-color);
   display: flex;
-  box-shadow: 0px 1px 1px  0 rgba(0,0,0,0.5), 0px 2px 5px 0 rgba(0,0,0,0.6);
+  flex-direction: column;
+  box-shadow: 0px 1px 1px 0 rgba(0, 0, 0, 0.5), 0px 2px 5px 0 rgba(0, 0, 0, 0.6);
 }
 
 .main-container .left-container {
-  position:relative;
-  width: 40%;
-  height:100%;
+  position: relative;
+  width: 45%;
+  height: 100%;
   flex: 30%;
   color: white;
-  background: #1B1D24;
+  background: var(--main-bg-color);
   border-right: 1px solid black;
 }
 
@@ -43,12 +51,11 @@ body {
   flex: 70%;
   display: flex;
   flex-direction: column;
-  background: #1B1D24;
+  background: var(--main-bg-color);
   overflow: hidden;
   align-items: center;
   justify-content: center;
 }
-
 .right-container h2 {
   color: #72EB3A;
   margin: auto;
@@ -63,7 +70,7 @@ body {
   align-items: center;
   width: 100%;
   height: 60px;
-  background: #72EB3A;
+  background: var(--secondary-color);
   padding: 0 15px;
 }
 
@@ -72,7 +79,7 @@ body {
 	flex-direction: row;
 }
 
-.user-img {
+.user-img, .user-imgg {
   position:relative;
   width: 40px;
   height: 40px;
@@ -101,7 +108,7 @@ body {
   list-style: none;
   display: flex;
   cursor: pointer;
-  color: #1B1D24;
+  color: var(--main-bg-color);
   margin-left: 22px;
   font-size: 18px;
 }
@@ -112,7 +119,7 @@ body {
   top: 60px;
   width: 100%;
   height: 60px;
-  background: #72EB3A;
+  background: var(--secondary-color);
   display: flex;
 /*   justify-content: center; */
   align-items: center;
@@ -142,7 +149,7 @@ body {
   position: absolute;
   left: 35px;
   top: 25px;
-  color:#72EB3A;
+  color:var(--accent-color);
   font-size: 0.8em;
 }
 
@@ -152,7 +159,7 @@ body {
   overflow-y: auto;
 }
 
-.chat-list .chat-box {
+.chat-list .chat-box, .group-box {
   position: relative;
   width: 100%;
   display:flex;
@@ -163,7 +170,7 @@ body {
   border-bottom: 1px solid black;
 }
 
-.chat-list .chat-box .img-box {
+.chat-list .chat-box .img-box, .group-box .img-box {
   position:relative;
   width: 55px;
   height:45px;
@@ -171,36 +178,42 @@ body {
   border-radius: 50%;
 }
 
-.chat-list .chat-box .chat-details {
+.chat-list .chat-box .chat-details,
+.group-box .group-details {
   width: 100%;
   margin-left: 10px;
 }
 
-.chat-list .chat-box .chat-details .text-head {
+.chat-list .chat-box .chat-details .text-head,
+.group-box .group-details .text-head {
   display:flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom:2px;
 }
 
-.chat-list .chat-box .chat-details .text-head h4 {
+.chat-list .chat-box .chat-details .text-head h4,
+.group-box .group-details .text-head h4 {
   font-size: 1.1em;
   font-weight: 600;
-  color: #007BFF;
+  color: white;
 }
 
-.chat-list .chat-box .chat-details .text-head .time {
+.chat-list .chat-box .chat-details .text-head .time,
+.group-box .group-details .text-head .time {
   font-size: 0.8em;
   color: #aaa;
 }
 
-.chat-list .chat-box .chat-details .text-message {
+.chat-list .chat-box .chat-details .text-message,
+.group-box .group-details .text-message {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.chat-list .chat-box .chat-details .text-message p {
+.chat-list .chat-box .chat-details .text-message p,
+.group-box .group-details .text-message p {
   color: #aaa;
   font-size: 0.9em;
   overlay: hidden;
@@ -211,7 +224,8 @@ img {
   object-fit: cover;
 }
 
-.chat-list .chat-box .chat-details .text-message b {
+.chat-list .chat-box .chat-details .text-message b,
+.group-box .group-details .text-message b {
   background: #007BFF;
   color: #fff;
   min-width: 20px;
@@ -229,11 +243,13 @@ img {
   background: #ebebeb;
 }
 
-.chat-list .chat-box:hover {
+.chat-list .chat-box:hover,
+.group-box:hover {
   background: #343A40;
 }
 
-.chat-list .chat-box .chat-details .text-head .unread {
+.chat-list .chat-box .chat-details .text-head .unread,
+.group-box .group-details .text-head .unread {
   color: #007BFF;
 }
 
@@ -414,7 +430,7 @@ h6 {
 	margin-top: 10px;
 }
 
-.user-img {
+.user-img, .user-imgg {
     margin-right: auto;
 }
 
@@ -428,6 +444,90 @@ h6 {
     margin: 10px;
 }
 
+.buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+button {
+	background-color: var(--secondary-color);
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    margin-right: 10px;
+    color: white;
+}
+
+button:hover {
+	transform: scale(0.95);
+}
+
+button:focus {
+	outline: none;
+}
+
+button.ghost {
+	background-color: transparent;
+	border-color: #FFFFFF;
+}
+
+.navigate {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  background-color: var(--primary-color);
+  height: 10vh;
+  position: sticky;
+}
+
+.tab {
+  margin: 0;
+  padding: 10px;
+  border-bottom: 2px solid var(--primary-color);
+  border-radius: 0;
+  cursor: pointer;
+  flex-grow: 1;
+  text-align: center; /* Center the text */
+  font-size: 20px; /* Increase the font size */
+  transition: background-color 0.3s; /* Add animation */
+}
+
+.tab.active {
+  background-color: var(--secondary-color);
+  border-bottom-color: var(--accent-color);
+}
+
+.content {
+  display: none;
+  margin: 0;
+  height: 100vh;
+  padding: 0;
+  font-size: 16px; /* Increase the font size */
+}
+
+.content.active {
+  position: relative;
+  width: 100%;
+  max-width: 1500px; /* Changed max-width for responsiveness */
+  height: calc(100% - 10vh);
+  background: var(--main-bg-color);
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0px 1px 1px 0 rgba(0, 0, 0, 0.5), 0px 2px 5px 0 rgba(0, 0, 0, 0.6);
+}
+
+#content2{
+  flex-direction: column;
+}
+
+h4{
+  color: var(--accent-color);
+}
 @media screen and (max-width: 800px) {
   .main-container .right-container{
     display: none;
