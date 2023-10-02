@@ -143,6 +143,7 @@ class GroupController {
         // Add the message to database and send it back as response
         await dbClient.groupMessages.updateOne({ groupId },
           { $push: { messages: data } });
+        data.id = groupId;
         res.status(201).send(data); // Sends the newly sent message
       } else {
         // Send an unauthorized error if not authenticated

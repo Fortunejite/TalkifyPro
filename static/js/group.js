@@ -19,6 +19,7 @@ function sendMessage(name, id, socket) {
     time: date.toDateString(),
     to: $('#friend').text(),
     sender: name,
+    id,
   };
   $.ajax({
     url: `/api/v1/groupchat/${id}/send?x-token=${token}`,
@@ -28,11 +29,14 @@ function sendMessage(name, id, socket) {
       $('#message').val('');
       const parent = $('.chat-container');
       const newMessage = $('<div class="message-box my-message"></div>');
-      newMessage.append(`<h4>{{ response.sent_by }}</h4><p>${response.message}<br><span>${response.time}</span></p>`);
+      newMessage.append(`<div class="block">
+        <h4>${response.sent_by}</h4>
+        <p>${response.message}<br><span>${response.time}</span></p>
+      </div>`);
       parent.append(newMessage);
       const div = $('.chat-container');
       div.scrollTop(div[0].scrollHeight);
-      socket.emit('send-msg', data);
+      socket.emit('send-group-msg', data);
     },
 
   });
@@ -44,12 +48,15 @@ $(document).ready(function () {
   div.scrollTop(div[0].scrollHeight);
   const id = $('.dp').attr('alt');
   const socket = io('http://localhost:8000');
-  socket.emit('add-user', name);
-  socket.on('msg-recieved', (data) => {
-    if (data.sender === $('#friend').text()) {
+  socket.emit('add-user-group', name);
+  socket.on('group-msg-recieved', (response) => {
+    if (response.id === id) {
       const parent = $('.chat-container');
       const newMessage = $('<div class="message-box friend-message"></div>');
-      newMessage.append(`<p>${data.message}<br><span>${data.time}</span></p>`);
+      newMessage.append(`<div class="block">
+        <h4>${response.sender}</h4>
+        <p>${response.message}<br><span>${response.time}</span></p>
+      </div>`);
       parent.append(newMessage);
       const div = $('.chat-container');
       div.scrollTop(div[0].scrollHeight);

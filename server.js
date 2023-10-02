@@ -36,6 +36,7 @@ function getKeyByValue(map, searchValue) {
 }
 
 global.onlineUsers = new Map();
+global.onlineUsersGroup = new Map();
 io.on('connection', (socket) => {
   global.chatSocket = socket;
   socket.on('add-user', async (user) => {
@@ -47,10 +48,29 @@ io.on('connection', (socket) => {
     onlineUsers.set(user, socket.id);
   });
 
+  socket.on('add-user-group', async (user) => {
+    // eslint-disable-next-line no-undef
+    onlineUsersGroup.set(user, socket.id);
+  });
+
   socket.on('send-msg', (data) => {
     const sendUserSocket = global.onlineUsers.get(data.to);
     if (sendUserSocket) {
       io.to(sendUserSocket).emit('msg-recieved', data);
+    }
+  });
+
+  socket.on('send-group-msg', async (data) => {
+    const { members } = await dbClient.groups.findOne({ _id: data.id });
+    for (const member of members) {
+      if (member === data.sender) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      const sendUserSocket = global.onlineUsersGroup.get(member);
+      if (sendUserSocket) {
+        io.to(sendUserSocket).emit('group-msg-recieved', data);
+      }
     }
   });
 
