@@ -27,10 +27,14 @@ To run this application locally, follow these steps:
 ## Usage:
 npm start
 
-##Database setup
+## Database setup
+
  // utils/db.js
  module.exports = {
  url: 'mongodb://localhost:27017/chatting-app',
    };
 
+
+
+## Conclision
 In this project, we utilized HTML, jQuery, CSS, MongoDB, Node.js, and WebSocket.io to create a real-time chat application with seamless communication between clients and the server.
