@@ -18,11 +18,9 @@ $(document).ready(function () {
         name: $('#name1').val(),
         description: $('#name2').val(),
       },
-      success(response, text, jqXHR) {
-        if (jqXHR.status === 200) {
-          alert('Group successfully created!');
-          window.location.href = `/api/v1/groupChat/${response.groupId}?x-token=${token}`;
-        }
+      success(response) {
+        alert('Group successfully created!');
+        window.location.href = `/api/v1/groupChat/${response.groupId}?x-token=${token}`;
         $('#sign').show();
         $('#loadingSpinner').hide();
       },

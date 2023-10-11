@@ -119,6 +119,7 @@ class AppController {
     }
   }
 
+  // Controller for getting user avatar image
   static async getImage(req, res) {
     const { username } = req.params;
     const user = await dbClient.users.findOne({ username });
@@ -134,8 +135,9 @@ class AppController {
     res.end(imageBuffer);
   }
 
+  // Controller for rendering the landing page
   static LandingPage(req, res) {
-    res.render('about.html');
+    res.render('about.html'); // Renders the about.html page
   }
 }
 
