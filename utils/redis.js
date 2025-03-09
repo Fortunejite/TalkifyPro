@@ -6,7 +6,7 @@ class RedisClient {
     const redisConfig = {
       host: 'redis-14529.c238.us-central1-2.gce.cloud.redislabs.com',
       port: 14529,
-      password: 'donqhaJub5ZFP2xLqy0wbz7tFKh4M96K',
+      password: '2Wld5DdBQhrp6zRwcxA3EYNcX1QiQyDH',
     };
     this.client = redis.createClient(redisConfig);
 
