@@ -4,7 +4,7 @@ const redis = require('redis');
 class RedisClient {
   constructor() {
     const redisConfig = {
-      host: 'redis-14650.c262.us-east-1-3.ec2.redns.redis-cloud.com:14650',
+      host: 'redis-14650.c262.us-east-1-3.ec2.redns.redis-cloud.com',
       port: 14529,
       password: '2Wld5DdBQhrp6zRwcxA3EYNcX1QiQyDH',
     };
